@@ -41,7 +41,7 @@ import * as redisStore from 'cache-manager-redis-store';
     }),
     CM.register({
       store: redisStore,
-      url: 'redis://default:5ad6627dc1171d868f7c@reserva99_redis:6379',
+      url: env.REDIS_URL,
       ttl: 5 * 60,
       isGlobal: true
     }),

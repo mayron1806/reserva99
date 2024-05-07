@@ -8,7 +8,9 @@ COPY *.lock ./
 RUN yarn install --frozen-lockfile
 
 COPY --chown=node:node . .
+
 RUN npx prisma generate \
+    && npx prisma migrate deploy \
     && yarn build
 # ---
 
