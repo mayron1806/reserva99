@@ -1,0 +1,28 @@
+import 'dotenv/config'
+export const env = {
+  HOST: process.env.HOST,
+  CLIENT_HOST: process.env.CLIENT_HOST,
+  EMAIL_HOST: process.env.EMAIL_HOST,
+  EMAIL_PORT: process.env.EMAIL_PORT,
+  EMAIL_SECURE: process.env.EMAIL_SECURE,
+  EMAIL_USER: process.env.EMAIL_USER,
+  EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
+  DATABASE_URL: process.env.DATABASE_URL,
+  JWT_SECRET: process.env.JWT_SECRET,
+  JWT_TOKEN_LIFE_TIME: process.env.JWT_TOKEN_LIFE_TIME,
+  HASH_SECRET: process.env.HASH_SECRET,
+  REDIS_HOST: process.env.REDIS_HOST,
+  REDIS_PORT: process.env.REDIS_PORT,
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+  PINECONE_INDEX: process.env.PINECONE_INDEX,
+  PINECONE_API_KEY: process.env.PINECONE_API_KEY,
+  PINECONE_ENVIRONMENT: process.env.PINECONE_ENVIRONMENT,
+  EFI_AUTH_URL: process.env.EFI_AUTH_URL,
+  EFI_USERNAME: process.env.EFI_USERNAME,
+  EFI_PASSWORD: process.env.EFI_PASSWORD,
+  EFI_BASE_URL: process.env.EFI_BASE_URL,
+  AWS_REGION: process.env.AWS_REGION,
+  AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
+  AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
+  IS_PRODUCTION: process.env.NODE_ENV === 'production'
+}

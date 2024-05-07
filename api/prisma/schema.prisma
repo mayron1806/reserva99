@@ -1,0 +1,273 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String  @id @default(cuid())
+
+  nick     String  @unique
+  name     String? 
+  email    String? @unique
+  password String 
+  companies UserCompany[]
+
+  permissions String[] @default([])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  status      UserStatus    @default(VerifyEmail)
+  client      Client?
+}
+model Client {
+  id       String  @id @default(cuid())
+
+  name     String
+  alias    String?
+  email    String?
+  phone    String?
+
+  lastReserveDate   DateTime?
+
+  user     User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId   String?  @unique
+
+  blocked    Boolean  @default(false)
+
+  company    Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId  String
+
+  reserves   Reserve[]
+}
+enum UserStatus {
+  Active
+  VerifyEmail
+}
+model Company {
+  id       String  @id @default(cuid())
+  
+  identifier String @unique
+  name       String
+  description String?
+  logo       String?
+  
+  address  Address?  @relation(fields: [addressId], references: [id], onDelete: Cascade)
+  addressId String?  @unique
+
+  cashFlow  CashFlow?
+
+  users      UserCompany[]
+  reserves Reserve[]
+  clients  Client[]
+  services Service[]
+
+  plan                  String?
+  gatewaySubscriptionId String?
+  gatewaySubscriptionStatus String
+
+  block    Block?
+  times    Times?
+
+  // reserve
+  preReserveTime Int? // (tempo com que agendamento pode ser criado ex: 4h antes)
+  preCancelTime Int? // (tempo com que agendamento pode ser cancelado Ex: 4h antes)
+  maxPreReserveTime Int? // (tempo com que agendamento pode ser feito, Ex: até 3 meses antes)
+  cancellationPolicy String? // politica de cancelamento
+}
+model UserCompany {
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String  @unique
+
+  company  Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId  String @unique
+  role       String
+
+  @@id([companyId, userId])
+}
+model Times {
+  id       String  @id @default(cuid())
+
+  company  Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId String @unique
+  // array de horarios permitidos para agendamento
+  monday    Json?
+  tuesday   Json?
+  wednesday Json?
+  thursday  Json?
+  friday    Json?
+  saturday  Json?
+  sunday    Json?
+}
+model Block {
+  id       String  @id @default(cuid())
+
+  company  Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId String @unique
+  
+  name     String?
+  dates    Json? // array de dia e mes
+
+  monday    Boolean?
+  tuesday   Boolean?
+  wednesday Boolean?
+  thursday  Boolean?
+  friday    Boolean?
+  saturday  Boolean?
+  sunday    Boolean?
+
+  status   Boolean  @default(true)
+}
+model Service {
+  id       String  @id @default(cuid())
+  
+  identifier String?
+  name       String
+  description String
+  price       Int?
+  duration    Int?
+
+  containVariants  Boolean @default(false)
+  variants Variant[]
+  reserves Reserve[]
+
+  allowClientAnonymousReserve Boolean? // permite reserva de clientes que não fizeram login
+  allowClientReserve Boolean? // permite reserva feita pelo cliente
+
+  company    Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId  String
+}
+model Variant {
+  id       String  @id @default(cuid())
+
+  name        String
+  description String
+  price       Int
+  duration    Int
+
+  service     Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  serviceId   String
+  reserves Reserve[]
+}
+model Reserve {
+  id       String  @id @default(cuid())
+
+  status     String?
+  paymentStatus String?
+  paymentMethod String?
+  startDate  DateTime
+  endDate  DateTime
+  
+  company    Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId  String
+
+  service    Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  serviceId  String
+
+  variant    Variant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  variantId  String?
+
+  client     Client?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  clientId   String?
+}
+model Address {
+  id       String  @id @default(cuid())
+  
+  country    String
+  state      String
+  city       String
+  district   String
+  street     String
+  number     String
+  complement String
+  zipCode    String
+  company    Company?
+}
+
+model CashFlow {
+  id         String  @id @default(cuid())
+
+  company    Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId  String  @unique
+
+  transactions Transaction[]
+  monthBalance  MonthBalance[]
+  schedules TransactionSchedule[]
+}
+model Transaction {
+  id         String  @id @default(cuid())
+
+  name          String
+  description   String?
+  type          TransactionType
+  value         Int
+  status        String
+  date          DateTime
+  model         Boolean
+
+  schedule      TransactionSchedule? @relation("item", fields: [scheduleId], references: [id], onDelete: SetNull)
+  scheduleId    String?
+
+  scheduleModel      TransactionSchedule? @relation("model")
+
+  cashFlow      CashFlow  @relation(fields: [cashFlowId], references: [id], onDelete: Cascade)
+  cashFlowId    String
+
+  monthBalance      MonthBalance  @relation(fields: [monthBalanceId], references: [id], onDelete: Cascade)
+  monthBalanceId    String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+enum TransactionType {
+  Invoice
+  Expense
+}
+model TransactionSchedule {
+  id         String  @id @default(cuid())
+
+  period    RepeatPeriod
+  frequency Int
+
+  maxRepeatAmount    Int?
+  maxRepeatDate      DateTime?
+  active             Boolean
+  startIn            DateTime  @default(now())
+
+  weekDays  String[]
+  monthDays String[]
+
+  items Transaction[]    @relation("item")
+
+  model      Transaction   @relation("model", fields: [modelId], references: [id], onDelete: Restrict)
+  modelId   String @unique
+
+  cashFlow      CashFlow  @relation(fields: [cashFlowId], references: [id], onDelete: Cascade)
+  cashFlowId    String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+enum RepeatPeriod {
+  Weekly
+  Monthly
+}
+model MonthBalance {
+  id       String  @id @default(cuid())
+
+  balance     Int
+  invoice     Int
+  expense     Int
+  startIn     DateTime
+  endIn       DateTime
+  transactions Transaction[]
+
+  cashFlow      CashFlow  @relation(fields: [cashFlowId], references: [id], onDelete: Cascade)
+  cashFlowId    String
+
+  @@unique([cashFlowId, startIn, endIn])
+}

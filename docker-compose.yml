@@ -1,0 +1,90 @@
+version: '3'
+services:
+  api:
+    container_name: api
+    build: 
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    networks:
+      - app_network
+    env_file:
+      - ./api/.env
+
+    deploy:
+      resources: 
+        limits:
+          cpus: "0.3"
+          memory: "256M"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  web:
+    container_name: web
+    build: 
+      context: ./fe
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - app_network
+    env_file:
+      - ./fe/.env
+    deploy:
+      resources: 
+        limits:
+          cpus: "0.2"
+          memory: "128M"
+    depends_on:
+      - api
+
+  redis:
+    container_name: redis-cache
+    image: "redis:7.2.4-alpine"
+    healthcheck:
+      test: ["CMD", "redis-cli","ping"]
+    networks:
+      - app_network
+    ports:
+      - "6379:6379"
+    deploy:
+      resources: 
+        limits:
+          cpus: "0.2"
+          memory: "128M"
+
+  postgres:
+    container_name: postgres
+    image: "postgres:16.2-alpine3.19"
+    user: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    networks:
+      - app_network
+    ports:
+      - "5432:5432"
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    deploy:
+      resources: 
+        limits:
+          cpus: "0.3"
+          memory: "128M"
+
+volumes:
+  dbdata:
+
+networks:
+  app_network:
+    driver: bridge
