@@ -9,9 +9,10 @@ RUN yarn install --frozen-lockfile
 
 COPY --chown=node:node . .
 
-RUN npx prisma generate \
-    && npx prisma migrate deploy \
-    && yarn build
+RUN npx prisma generate
+RUN npx prisma migrate deploy 
+
+RUN yarn build
 # ---
 
 FROM node:20-alpine
