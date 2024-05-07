@@ -33,14 +33,15 @@ import * as redisStore from 'cache-manager-redis-store';
     }),
     BullModule.forRoot({
       redis: {
+        username: env.REDIS_USER,
+        password: env.REDIS_PASSWORD,
         host: env.REDIS_HOST,
         port: parseInt(env.REDIS_PORT),
       },
     }),
     CM.register({
       store: redisStore,
-      host: env.REDIS_HOST,
-      port: env.REDIS_PORT,
+      url: 'redis://default:5ad6627dc1171d868f7c@reserva99_redis:6379',
       ttl: 5 * 60,
       isGlobal: true
     }),
