@@ -10,7 +10,8 @@ export const getSubdomain = (request: Request) => {
 
   if (host) {
     const partesDoDominio = host.split('.');
-    if (partesDoDominio.length > 2) {
+    const isProd = ENV.NODE_ENV === 'production';
+    if (isProd ? partesDoDominio.length > 3 : partesDoDominio.length > 2) {
       return partesDoDominio[0];
     }
   }
