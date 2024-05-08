@@ -5,13 +5,11 @@ WORKDIR /app/web
 
 COPY package*.json ./
 COPY *.lock ./
-RUN yarn install --frozen-lockfile
+RUN npm ci
 
 COPY --chown=node:node . .
-# Adicione o comando para listar arquivos e pastas
-RUN pwd
-RUN ls -la
-RUN yarn build
+
+RUN npm run build
 # ---
 
 FROM node:20-alpine

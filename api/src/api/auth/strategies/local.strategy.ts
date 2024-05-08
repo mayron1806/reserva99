@@ -27,7 +27,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     const user = await (EmailUtils.validateEmail(email)
       ? this.userRepo.getUserByEmail(email)
       : this.userRepo.getUserByNick(email));
-    console.log('login');
     if (!user) {
       throw new BadRequestException('Usuario e/ou senha incorreto(s)');
     }

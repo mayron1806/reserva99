@@ -11,7 +11,6 @@ export const login = async (request: Request, account: string, password: string)
   if (!res.success) throw new ApiError(res.errorMessage, res.status);
   const session = await getSession(request);
   session.set(SessionData.ACCESS_TOKEN, res.data.accessToken);
-  console.log(session.get(SessionData.ACCESS_TOKEN));
   session.set(SessionData.REFRESH_TOKEN, res.data.refreshToken);
   session.set(SessionData.EXPIRES_AT, moment().add(res.data.expiresIn, 'seconds').toDate());
   session.set(SessionData.EXPIRES_IN, res.data.expiresIn);
@@ -34,6 +33,11 @@ export const login = async (request: Request, account: string, password: string)
   
 }
 export const createAccount = async (nick: string, email: string, password: string) => {
+  console.log(nick);
+  console.log(email);
+  console.log(password);
+  console.log(ENV.SERVER_URL);
+  
   const { data } = await http.post<HTTPResponse>('/auth/create', { nick, email, password });
   return data; 
 }

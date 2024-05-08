@@ -1,6 +1,5 @@
 import 'dotenv/config'
 export const env = {
-  HOST: process.env.HOST,
   CLIENT_HOST: process.env.CLIENT_HOST,
   EMAIL_HOST: process.env.EMAIL_HOST,
   EMAIL_PORT: process.env.EMAIL_PORT,
