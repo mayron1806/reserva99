@@ -9,26 +9,8 @@ services:
       - "8081:8081"
     networks:
       - app_network
-    environment:
-      - HOST=${HOST}
-      - CLIENT_HOST=${CLIENT_HOST}
-      - EMAIL_HOST=${EMAIL_HOST}
-      - EMAIL_PORT=${EMAIL_PORT}
-      - EMAIL_SECURE=${EMAIL_SECURE}
-      - EMAIL_USER=${EMAIL_USER}
-      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
-      - DATABASE_URL=${DATABASE_URL}
-      - JWT_SECRET=${JWT_SECRET}
-      - JWT_TOKEN_LIFE_TIME=${JWT_TOKEN_LIFE_TIME}
-      - HASH_SECRET=${HASH_SECRET}
-      - REDIS_HOST=${REDIS_HOST}
-      - REDIS_PORT=${REDIS_PORT}
-      - REDIS_USER=${REDIS_USER}
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - REDIS_URL=${REDIS_URL}
-      - AWS_REGION=${AWS_REGION}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    env_file:
+      - ./api/.env
 
     depends_on:
       postgres:
@@ -45,11 +27,8 @@ services:
       - "3000:3000"
     networks:
       - app_network
-    environment:
-      - SERVER_URL=${SERVER_URL}
-      - DOMAIN=${DOMAIN}
-      - COOKIE_DOMAIN=${COOKIE_DOMAIN}
-      - COOKIE_SESSION_SECRET=${COOKIE_SESSION_SECRET}
+    env_file:
+      - ./fe/.env
   
     depends_on:
       - api
@@ -57,6 +36,9 @@ services:
   redis:
     container_name: redis-cache
     image: "redis:7.2.4-alpine"
+    env_file:
+      - redis.env
+    command: /bin/sh -c "redis-server --requirepass $$REDIS_HOST_PASSWORD"
     healthcheck:
       test: ["CMD", "redis-cli","ping"]
     networks:
@@ -65,13 +47,13 @@ services:
       - "6379:6379"
 
   postgres:
+    hostname: postgres
     container_name: postgres
     image: "postgres:16.2-alpine3.19"
     user: postgres
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
+    env_file:
+      - postgres.env
+   
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
       interval: 1s

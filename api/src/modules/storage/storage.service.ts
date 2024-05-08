@@ -2,32 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { DeleteFileProps, DownloadFileProps, UploadFileProps } from './types';
 import { s3Client } from './config/s3Client';
-import { s3 } from './config/s3';
 import { GetObjectCommand, DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { Readable } from 'stream';
 
 @Injectable()
 export class StorageService {
-  async saveFile({ path, file, bucket, contentType }: UploadFileProps) {
-    return new Promise<boolean>((resolve, reject) => {
-      s3.upload(
-        {
-          Bucket: bucket,
-          Key: path,
-          Body: file.buffer,
-          ContentType: contentType,
-        },
-        (err) => {
-          if (err) {
-            console.log(err);
-            
-            resolve(false);
-          }
-          resolve(true);
-        },
-      );
-    });
-  }
   async getDowloadUrl({ bucket, path }: DownloadFileProps) {
     const command = new GetObjectCommand({
       Bucket: bucket,

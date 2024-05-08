@@ -4,15 +4,16 @@ USER node
 WORKDIR /app/server
 
 COPY package*.json ./
+COPY prisma ./prisma/
 COPY *.lock ./
-RUN yarn install --frozen-lockfile
+RUN npm ci
 
 COPY --chown=node:node . .
 
 RUN npx prisma generate
-RUN npx prisma migrate deploy 
 
-RUN yarn build
+RUN npm run build
+
 # ---
 
 FROM node:20-alpine
@@ -26,5 +27,6 @@ COPY --from=builder --chown=node:node /app/server/package*.json ./
 COPY --from=builder --chown=node:node /app/server/node_modules/ ./node_modules/
 COPY --from=builder --chown=node:node /app/server/dist/ ./dist/
 COPY --from=builder --chown=node:node /app/server/.env ./.env
+COPY --from=builder --chown=node:node /app/server/prisma/ ./prisma/
 
-CMD ["node", "dist/src/main.js"]
+CMD ["npm", "run", "start:migrate:prod"]
