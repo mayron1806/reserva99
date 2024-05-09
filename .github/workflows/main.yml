@@ -6,7 +6,7 @@ jobs:
     runs-on: [ubuntu-latest]
     steps:
       - name: Deploy Api
-        uses: action/checkout@2
+        uses: action/checkout@v2
       
       - name: Deploy Api
         uses: appleboy/ssh-action@v0.1.3
