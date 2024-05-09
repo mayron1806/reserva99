@@ -29,6 +29,9 @@ export class CompanyGuard implements CanActivate {
     let company = await this.cacheManager.get<Company & { users: UserCompany[] }>(`company_${companyIdentifier}`);
     if (!company) {
       company = await this.txHost.tx.company.findUnique({ where: { identifier: companyIdentifier }, include: { users: true } });
+      if(!company) {
+        throw new NotFoundException(`Companhia com identificador ${companyIdentifier} não encontrado ou você não tem acesso a ele.`);
+      }
       this.cacheManager.set(`company_${companyIdentifier}`, company, 60);
       this.logger.debug('companhia salva no cache');
     }
