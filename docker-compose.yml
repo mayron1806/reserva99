@@ -5,6 +5,7 @@ services:
     build: 
       context: ./api
       dockerfile: Dockerfile
+    restart: always
     ports:
       - "8081:8081"
     networks:
@@ -23,6 +24,7 @@ services:
     build: 
       context: ./fe
       dockerfile: Dockerfile
+    restart: always
     ports:
       - "3000:3000"
     networks:
