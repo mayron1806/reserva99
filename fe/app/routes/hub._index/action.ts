@@ -19,6 +19,6 @@ export const action = withAuthAction(async ({ request, token }) => {
   if (!response.success) {
     return json({ ok: false, error: response.errorMessage } as ActionResponse<Company>)
   }
-  const isProd = ENV.NODE_ENV === 'production';
-  return redirect(`http${isProd ? 's' : ''}://${response.data.identifier}.${ENV.DOMAIN}/admin`);
+  const sslEnabled = ENV.SSL_ENABLED;
+  return redirect(`http${sslEnabled ? 's' : ''}://${response.data.identifier}.${ENV.DOMAIN}/admin`);
 });

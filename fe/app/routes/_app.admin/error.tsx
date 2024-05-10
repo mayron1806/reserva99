@@ -6,9 +6,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/com
 const ErrorBoundary = () => {
   const error = useRouteError();
   const handleGoToSelect = () => {
-    const isProd = window.ENV.NODE_ENV === 'production';
+    const sslEnabled = window.ENV.SSL_ENABLED;
     const domain = window.ENV.DOMAIN;
-    const url = `${isProd ? 'https' : 'http'}://${domain}/hub`;
+    const url = `${sslEnabled ? 'https' : 'http'}://${domain}/hub`;
     window.location.href = url;
   }
   if (isRouteErrorResponse(error)) {

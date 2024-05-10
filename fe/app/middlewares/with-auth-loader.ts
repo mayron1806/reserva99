@@ -7,7 +7,7 @@ export type AuthLoaderFuncitionArgs = LoaderFunctionArgs & { token: Token, heade
 export type AuthLoaderFuncition = (args: AuthLoaderFuncitionArgs) => ReturnType<LoaderFunction>;
 
 export const withAuthLoader = (loader: AuthLoaderFuncition) => async (args: LoaderFunctionArgs) => {
-  const isProd = ENV.NODE_ENV === 'production';
+  const sslEnabled = ENV.SSL_ENABLED;
   const {
     headers, logged, token
   } = await authenticate(args.request, new Headers());
@@ -23,13 +23,13 @@ export const withAuthLoader = (loader: AuthLoaderFuncition) => async (args: Load
     // ex: clinica.exampe.com/hub
     // deve redirecionar para o root example.com/hub 
     if (path === '/hub' && subdomain) {
-      return redirect(`${isProd ? 'https' : 'http'}://${ENV.DOMAIN}/hub`, {
+      return redirect(`${sslEnabled ? 'https' : 'http'}://${ENV.DOMAIN}/hub`, {
         headers,
       });
     }
     if (path !== '/hub') {
       if (!subdomain) {
-        return redirect(`${isProd ? 'https' : 'http'}://${ENV.DOMAIN}/hub`, {
+        return redirect(`${sslEnabled ? 'https' : 'http'}://${ENV.DOMAIN}/hub`, {
           headers,
         });
       }
