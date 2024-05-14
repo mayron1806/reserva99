@@ -42,7 +42,7 @@ export class EmailConsumer {
       expiresIn: EMAIL_TOKEN_EXPIRATION_TIME,
     });
     if (!env.IS_PRODUCTION) this.logger.debug(token);
-    const url = `${env.CLIENT_HOST}/active?token=${token}`;
+    const url = `${env.CLIENT_HOST}/active-account?token=${token}`;
     
     await this.emailService.sendEmailFromTemplate(
       job.data.email,
@@ -50,7 +50,7 @@ export class EmailConsumer {
       'confirm-create-account',
       {
         name: job.data.name,
-        confirmation_url: url,
+        confirmationUrl: url,
       },
     );
     this.logger.log("End active account email queue");
@@ -70,11 +70,12 @@ export class EmailConsumer {
     await this.emailService.sendEmailFromTemplate(
       job.data.email,
       'Esquecimento de senha',
-      'confirm-create-account',
+      'reset-password',
       {
         name: job.data.name,
-        confirmation_url: `${env.CLIENT_HOST}/reset-password?token=${token}`,
+        resetUrl: `${env.CLIENT_HOST}/reset-password?token=${token}`,
       },
     );
+    this.logger.log("End sendResetPassEmail");
   }
 }

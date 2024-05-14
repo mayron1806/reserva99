@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ForgotPasswordSchema, forgotPasswordSchema } from "./validation/forgot-password-schema";
 import { useActionCallback } from "~/hooks/use-action-callback";
 import { toast } from "~/components/ui/use-toast";
+import Link from "~/components/link";
 
 
 const LoginPage = () => {
@@ -54,7 +55,7 @@ const LoginPage = () => {
           </CardContent>
           <CardFooter className="flex flex-col">
             <Button loading={isSubmitting} className="mb-2">Enviar email</Button>
-            <a href="/login" aria-disabled={isSubmitting}>Voltar para login</a>
+            <Link href="/login" aria-disabled={isSubmitting}>Voltar para login</Link>
           </CardFooter>
         </Card>
       </Form>

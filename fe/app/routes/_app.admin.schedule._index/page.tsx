@@ -24,16 +24,21 @@ const SchedulePage = () => {
   return ( 
     <main className="flex flex-1 flex-col h-full p-4 md:p-8">
       <Card className="h-full flex-1">
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader className="flex flex-col sm:flex-row items-center justify-between">
           <div className="grid gap-2">
             <CardTitle>Agendamentos</CardTitle>
           </div>
-          <Button size="sm" onClick={() => navigate('/admin/schedule/create')}>
-            <Plus className="h-4 w-4 mr-1" />
-            Criar agendamento
-          </Button>
+          <div className="flex gap-2 flex-col xs:flex-row">
+            <Button size="sm" variant='outline' onClick={() => navigate('/admin/schedule/create')}>
+              Alterar horário de funcionamento
+            </Button>
+            <Button size="sm" onClick={() => navigate('/admin/schedule/create')}>
+              <Plus className="h-4 w-4 mr-1" />
+              Criar agendamento
+            </Button>
+          </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className=" overflow-scroll p-0 m-6">
           <BigCalendar 
             reserves={data.reserves} 
             defaultDate={date} 

@@ -17,7 +17,7 @@ export class EmailService {
     destination: string,
     subject: string,
     template: keyof typeof EmailTemplates,
-    data?: object,
+    data?: any,
   ) {
     await this.mailerService.sendMail({
       to: destination,

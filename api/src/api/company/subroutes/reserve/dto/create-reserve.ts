@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, Validate, ValidateNested } from "class-validator";
+import { IsEmail, IsNotEmpty, IsOptional, IsPositive, Validate, ValidateNested } from "class-validator";
 import { isValidISO8601Date } from "src/validation/iso-date";
 class Client {
   @IsNotEmpty({ message: 'O campo nome é obrigatorio.' })
@@ -23,6 +23,17 @@ export class CreateReserveRequestDto {
   
   @IsOptional()
   paymentMethod?: string;
+
+  @IsOptional()
+  description?: string;
+
+  @IsOptional()
+  @IsPositive({ message: 'A duração deve ser positiva.'})  
+  price?: number;
+
+  @IsOptional()
+  @IsPositive({ message: 'A duração deve ser positiva.'})
+  duration?: number;
   
   @IsNotEmpty({ message: 'O campo data é obrigatório' })
   @Validate(isValidISO8601Date, { message: 'Data inválida' })
@@ -40,5 +51,8 @@ export class CreateReserveRequestDto {
   @IsOptional()
   @ValidateNested({ each: true })
   client: Client;
+
+  @IsOptional()
+  hardSet?: boolean;
 
 }

@@ -13,7 +13,10 @@ export const action = withAuthAction(async ({ request, token }) => {
   if (errors) {
     return json({ errors, defaultValues });
   }
-  const { data: response } = await http.post<HTTPResponse<Company>>('/company', data, {
+  const { data: response } = await http.post<HTTPResponse<Company>>('/company', {
+    ...data,
+    address: data.hideAddress ? undefined : data.address,
+  } as Omit<Company, 'id'>, {
     headers: { 'Authorization': `Bearer ${token.accessToken}`}
   });
   if (!response.success) {

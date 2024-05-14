@@ -161,6 +161,10 @@ model Reserve {
   paymentMethod String?
   startDate  DateTime
   endDate  DateTime
+
+  description String
+  price       Int
+  duration    Int
   
   company    Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
   companyId  String

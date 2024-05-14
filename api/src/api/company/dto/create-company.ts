@@ -1,6 +1,8 @@
 import { Optional } from "@nestjs/common";
 import { Company } from "@prisma/client";
 import { IsNotEmpty, IsString, Length, Matches, MaxLength, ValidateNested } from "class-validator";
+import { CreateOrUpdateTimeRequest } from "../subroutes/time/dto/create-time";
+import { Type } from "class-transformer";
 
 export class Address {
   @IsNotEmpty({ message: 'O país é obrigatório' })
@@ -47,8 +49,13 @@ export class CreateCompanyRequestDto {
   identifier: string;
 
   @Optional()
-  @ValidateNested({ each: true })
+  @ValidateNested()
+  @Type(() => Address)
   address?: Address;
+
+  @ValidateNested()
+  @Type(() => CreateOrUpdateTimeRequest)
+  workTime?: CreateOrUpdateTimeRequest;
 }
 export class CreateCompanyResponseDto {
   id: string;

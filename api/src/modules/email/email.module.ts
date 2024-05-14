@@ -22,7 +22,7 @@ import { env } from 'src/constants/env';
           },
         },
         defaults: {
-          from: 'Enviado por <mayron.g.fernandes@gmail.com>',
+          from: 'Reserva99 <mayron.g.fernandes@gmail.com>',
         },
         template: {
           dir: join(process.cwd(), 'dist/templates/email'),
