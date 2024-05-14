@@ -1,8 +1,8 @@
 type Data = {
   name: string;
-  confirmationUrl: string;
+  resetUrl: string;
 }
-export const confirmCreateAccount = (data: Data) => {
+export const resetPassword = (data: Data) => {
   return `
   <!DOCTYPE html>
 <html lang="pt-br">
@@ -59,17 +59,17 @@ export const confirmCreateAccount = (data: Data) => {
   <main>
     <header>
       <h1>
-        Bem-vindo, ${data.name}!
+        Olá, ${data.name}!
       </h1>
     </header>
     <p>
-      É com grande satisfação que lhe damos as boas-vindas à nossa comunidade! Estamos animados por você se juntar a nós e começar a aproveitar todos os benefícios e recursos que nossa plataforma oferece.
-      Para começar, você precisa ativar sua conta. É simples e rápido!
+      Sabemos que é frustrante esquecer a senha, mas não se preocupe - estamos aqui para ajudá-lo a recuperar o acesso à sua conta!
     </p>
-    <p>Para ativar sua conta, basta clicar no link abaixo.</p>
-    <a href="${data.confirmationUrl}">${data.confirmationUrl}</a>
-    <p>Após clicar no botão ou no link, você será direcionado para a página de ativação da conta. Após a ativação você poderá entrar na sua conta.</p>
-    <p>Estamos ansiosos para vê-lo em nossa plataforma e esperamos que você aproveite ao máximo sua experiência conosco!</p>
+    <p>Para redefinir sua senha, basta clicar no link abaixo:</p>
+    <p>Após clicar no botão ou no link, você será direcionado para a página de redefinição de senha. Siga as instruções simples para escolher uma nova senha segura e recuperar o acesso à sua conta.</p>
+    <p>Lembre-se de escolher uma senha forte e única para manter sua conta segura.</p>
+    <p>Se você não solicitou esta redefinição de senha ou precisar de assistência adicional, entre em contato com nossa equipe de suporte imediatamente para que possamos ajudá-lo a proteger sua conta.</p>
+    <p>Estamos aqui para tornar o processo o mais fácil possível para você. Se precisar de mais alguma coisa, não hesite em nos contatar.</p>
     <footer>
       <p>Atenciosamente,</p>
       <p>99 Agendamentos</p>

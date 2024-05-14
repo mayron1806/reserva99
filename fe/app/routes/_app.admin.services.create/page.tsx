@@ -73,7 +73,6 @@ const CreateService = () => {
     if(price) setValue('price', normalizeMoney(price));
   }, [price]);
   //#endregion
-  console.log(errors);
   
   return (
     <main className="flex flex-1 flex-col h-full p-4 md:p-8">

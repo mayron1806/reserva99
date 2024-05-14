@@ -9,4 +9,5 @@ export class UpdateReserveRequestDto {
   
   @IsOptional()
   paymentMethod?: string;
+  
 }

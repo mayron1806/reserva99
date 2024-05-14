@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateUserSchema, createUserSchema } from "./validation/create-account-schema";
 import { useActionCallback } from "~/hooks/use-action-callback";
 import { toast } from "~/components/ui/use-toast";
+import Link from "~/components/link";
 
 
 const LoginPage = () => {
@@ -52,7 +53,7 @@ const LoginPage = () => {
           </CardContent>
           <CardFooter className="flex flex-col">
             <Button loading={isSubmitting} className="mb-2">Criar conta</Button>
-            <a href="/login" aria-disabled={isSubmitting}>Entrar na minha conta</a>
+            <Link href="/login" aria-disabled={isSubmitting}>Entrar na minha conta</Link>
           </CardFooter>
         </Card>
       </Form>

@@ -5,6 +5,7 @@ import { CreateCompanyRequestDto, CreateCompanyResponseDto } from './dto/create-
 import { FileUtils } from 'src/Utils/File.utils';
 import { StorageService } from 'src/modules/storage/storage.service';
 import { UpdateCompanyRequestDto } from './dto/update-company';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class CompanyService {
@@ -36,6 +37,17 @@ export class CompanyService {
           create: body.address
         } : undefined,
         gatewaySubscriptionStatus: 'new',
+        times: {
+          create: {
+            monday: body.workTime.monday ? body.workTime.monday as unknown as Prisma.JsonArray : [],
+            tuesday: body.workTime.tuesday ? body.workTime.tuesday as unknown as Prisma.JsonArray : [],
+            wednesday: body.workTime.wednesday ? body.workTime.wednesday as unknown as Prisma.JsonArray : [],
+            thursday: body.workTime.thursday ? body.workTime.thursday as unknown as Prisma.JsonArray : [],
+            friday: body.workTime.friday ? body.workTime.friday as unknown as Prisma.JsonArray : [],
+            saturday: body.workTime.saturday ? body.workTime.saturday as unknown as Prisma.JsonArray : [],
+            sunday: body.workTime.sunday ? body.workTime.sunday as unknown as Prisma.JsonArray : [],
+          }
+        },
         users: {
           create: {
             userId,

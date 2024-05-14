@@ -13,17 +13,7 @@ import { normalizeTime } from "~/masks";
 import { useActionCallback } from "~/hooks/use-action-callback";
 import { toast } from "~/components/ui/use-toast";
 import ErrorMessage from "~/components/error-message";
-import { WeekTime } from "~/types/time";
-type Days =  "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
-const daysOfWeek: Record<Days, string> = {
-  "monday": "Segunda",
-  "tuesday": "Terça",
-  "wednesday": "Quarta",
-  "thursday": "Quinta",
-  "friday": "Sexta",
-  "saturday": "Sábado",
-  "sunday": "Domingo"
-};
+import { Days, WeekTime, daysOfWeek } from "~/types/time";
 
 const WorkTime = () => {
   const data: LoaderData = useLoaderData<typeof loader>();

@@ -7,8 +7,8 @@ import { CreateScheduleSchema, createScheduleSchema } from "./validation/create-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "~/components/ui/button";
 import { InputWithLabel } from "~/components/input-with-label";
-import { useEffect } from "react";
-import { normalizeMoney, normalizePhoneNumber } from "~/masks";
+import { useEffect, useMemo } from "react";
+import { normalizeMoney, normalizePhoneNumber, normalizeTime } from "~/masks";
 import { Separator } from "~/components/ui/separator";
 import { Combobox } from "~/components/combobox";
 import { Skeleton } from "~/components/ui/skeleton";
@@ -53,7 +53,7 @@ const CreateSchedulePage = () => {
         variant: 'destructive'
       });
     },
-  })
+  });
   //#region mask
   const clientPhone = watch('client.phone');
   useEffect(() => {
@@ -94,7 +94,54 @@ const CreateSchedulePage = () => {
     if (isServiceSelected && (!times || times?.length === 0)) {
       handleSelectDate(moment().toDate().toISOString());
     }
-  }, [isServiceSelected])
+  }, [isServiceSelected]);
+
+  const disabledDays = useMemo(() => {
+    const { weekTime } = data;
+    const weekMap = {
+      "sunday": 0,
+      "monday": 1,
+      "tuesday": 2,
+      "wednesday": 3,
+      "thursday": 4,
+      "friday": 5,
+      "saturday": 6,
+    };
+    const days: number[] = [];
+    if (weekTime.monday?.every(t => t.start === '' && t.end === '')) days.push(weekMap['monday']);
+    if (weekTime.tuesday?.every(t => t.start === '' && t.end === '')) days.push(weekMap['tuesday']);
+    if (weekTime.wednesday?.every(t => t.start === '' && t.end === '')) days.push(weekMap['wednesday']);
+    if (weekTime.thursday?.every(t => t.start === '' && t.end === '')) days.push(weekMap['thursday']);
+    if (weekTime.friday?.every(t => t.start === '' && t.end === '')) days.push(weekMap['friday']);
+    if (weekTime.saturday?.every(t => t.start === '' && t.end === '')) days.push(weekMap['saturday']);
+    if (weekTime.sunday?.every(t => t.start === '' && t.end === '')) days.push(weekMap['sunday']);
+    return days;
+  }, [data.weekTime]);
+
+  const price = watch('price');
+  const duration = watch('duration');
+  //#region masks
+  useEffect(() => {
+    if(price) setValue('price', normalizeMoney(price));
+  }, [price]);
+  useEffect(() => {
+    if(duration) setValue('duration', normalizeTime(duration));
+  }, [duration]);
+  //#endregion
+
+  //#region populate duration and price
+  useEffect(() => {
+    setValue('duration', 
+      durationFormat(selectedService?.containVariants ? 
+        selectedService.variants?.find(v => v.id === watch('variantId'))?.duration! : 
+        selectedService?.duration!
+    ));
+    setValue('price', 
+      normalizeMoney(selectedService?.containVariants ? 
+        selectedService.variants?.find(v => v.id === watch('variantId'))?.price.toString() : 
+        selectedService?.price!.toString())
+    );
+  }, [selectedService]);
   return (
     <main className="flex flex-1 flex-col h-full p-4 md:p-8">
       <Card>
@@ -129,6 +176,7 @@ const CreateSchedulePage = () => {
                   <Combobox 
                     initialData={data.clientList.map(c => ({ label: `${c.name}${c.alias ? ' - ' + c.alias : ''}`, value: c.id}))}
                     label="Selecione um paciente: *"
+                    emptyMessage="Nenhum paciente cadastrado"
                     error={errors.client?.root?.message}
                     buttonText="Paciente"
                     inputPlaceholder="Paciente"
@@ -146,7 +194,8 @@ const CreateSchedulePage = () => {
               <h4 className="font-bold text-lg">Agendamento</h4>
               <Combobox 
                 buttonText="Escolha o servico" 
-                label="Servico: *" 
+                label="Servico: *"
+                emptyMessage="Nenhum serviço cadastrado"
                 initialData={data.serviceList.map(s => ({ label: s.name, value: s.id }))}
                 value={
                   watch('serviceId') ? { 
@@ -160,8 +209,6 @@ const CreateSchedulePage = () => {
               {
                 isFetchingService &&
                 <>
-                  <Skeleton className="w-full h-10" />
-                  <Skeleton className="w-full h-10" />
                   <Skeleton className="w-full h-10" />
                 </>
               }
@@ -186,15 +233,15 @@ const CreateSchedulePage = () => {
                 <div className="flex gap-2 flex-col sm:flex-row">
                   <InputWithLabel
                     label="Preço: *"
+                    disabled
                     defaultValue={normalizeMoney(selectedService?.containVariants ? 
                       selectedService.variants?.find(v => v.id === watch('variantId'))?.price.toString() : 
                       selectedService?.price!.toString())
                     }
-                    disabled
                   />
                   <InputWithLabel 
                     label="Duração: " 
-                    disabled 
+                    disabled
                     defaultValue={durationFormat(selectedService?.containVariants ? 
                       selectedService.variants?.find(v => v.id === watch('variantId'))?.duration! : 
                       selectedService?.duration!)
@@ -214,6 +261,7 @@ const CreateSchedulePage = () => {
                     date={watch('date')} 
                     setDate={date => date && handleSelectDate(date.toISOString())} 
                     error={errors.date?.message}
+                    disabledCalendarMatches={[{ before: new Date() }, { dayOfWeek: disabledDays }]}
                   />
                   {
                     isFetchingTimes &&

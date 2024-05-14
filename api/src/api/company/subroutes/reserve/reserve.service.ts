@@ -154,15 +154,23 @@ export class ReserveService {
     });
     return res;
   }
-  private async getDuration(serviceId: string, variantId?: string) {
+  private async getServiceData(serviceId: string, variantId?: string) {
     if (variantId) {
       const variant = await this.txHost.tx.variant.findUnique({ where: { id: variantId }});
       if (!variant) throw new NotFoundException('Variação não encontrada');
-      return variant.duration;
+      return {
+        duration: variant.duration,
+        price: variant.price,
+        description: variant.description,
+      };
     } 
     const service = await this.txHost.tx.service.findUnique({ where: { id: serviceId } });
     if (!service) throw new NotFoundException('Serviço não encontrado');
-    return service.duration;
+    return {
+      duration: service.duration,
+      price: service.price,
+      description: service.description,
+    };
   }
   private async getReservesByDate(companyId: string, date: Date) {
     const minDate = moment(date).startOf('day').toDate();
@@ -183,7 +191,7 @@ export class ReserveService {
       wednesday: companyTimes.wednesday as Time[],
     }
     const reserves = await this.getReservesByDate(companyId, date);
-    const duration = await this.getDuration(serviceId, variantId);
+    const { duration } = await this.getServiceData(serviceId, variantId);
     const res = this.getAvailableTimes(date, weekTimes, duration, reserves);
     return res.reduce<TimeAvailability[]>((acc, curr) => acc.concat(curr.times), []);
   }
@@ -201,14 +209,14 @@ export class ReserveService {
       tuesday: companyTimes.tuesday as Time[],
       wednesday: companyTimes.wednesday as Time[],
     }
-    const duration = await this.getDuration(serviceId, variantId);
+    const { duration, price, description } = await this.getServiceData(serviceId, variantId);
     const reserves = await this.getReservesByDate(companyId, date);
     const availableTimes = this.getAvailableTimes(date, weekTimes, duration, reserves);
     const startDate = moment(date).seconds(0).milliseconds(0).toDate(); 
     const endDate = moment(startDate).add(duration, 'seconds').toDate();
     const isAvailable = this.verifyAvailability(availableTimes, startDate, endDate);
     
-    if (!isAvailable) throw new BadRequestException('O horário já está ocupado');
+    if (!rest.hardSet && !isAvailable) throw new BadRequestException('O horário já está ocupado.');
     
     const reserve = await this.txHost.tx.reserve.create({
       data: {
@@ -217,6 +225,9 @@ export class ReserveService {
         status: rest.status,
         paymentMethod: rest.paymentMethod,
         paymentStatus: rest.paymentStatus,
+        description: rest.description ?? description,
+        duration: rest.duration ?? duration,
+        price: rest.price ?? price,
         company: { connect: { id: companyId } },
         service: { connect: { id: serviceId } },
         variant: variantId ? { connect: { id: variantId } } : undefined,
@@ -253,7 +264,7 @@ export class ReserveService {
       tuesday: companyTimes.tuesday as Time[],
       wednesday: companyTimes.wednesday as Time[],
     }
-    const duration = await this.getDuration(reserve.serviceId, reserve.variantId);
+    const { duration } = await this.getServiceData(reserve.serviceId, reserve.variantId);
     const reserves = await this.getReservesByDate(companyId, date);
     const availableTimes = this.getAvailableTimes(date, weekTimes, duration, reserves);
     const startDate = moment(date).seconds(0).milliseconds(0).toDate(); 

@@ -12,6 +12,7 @@ import { ptBR } from "date-fns/locale";
 import moment from "moment";
 import ErrorMessage from "./error-message";
 import { Label } from "./ui/label";
+import { Matcher } from "react-day-picker";
 
 type Props = {
   date?: Date | string,
@@ -19,8 +20,9 @@ type Props = {
   error?: string;
   label?: string;
   disabled?: boolean;
+  disabledCalendarMatches: Matcher | Matcher[] | undefined
 }
-export function DatePicker({ setDate, date, error, label, disabled }: Props) {
+export function DatePicker({ setDate, date, error, label, disabled, disabledCalendarMatches }: Props) {
   return (
     <Popover>
       <PopoverTrigger asChild disabled={disabled}>
@@ -53,6 +55,7 @@ export function DatePicker({ setDate, date, error, label, disabled }: Props) {
           locale={ptBR}
           selected={moment(date).toDate()}
           onSelect={setDate}
+          disabled={disabledCalendarMatches}
           initialFocus
         />
       </PopoverContent>

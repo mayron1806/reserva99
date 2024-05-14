@@ -104,6 +104,7 @@ export class AuthService {
       throw new InternalServerErrorException('Erro ao criar usuario');
     } 
     await this.emailQueue.add('active', {
+      name: createUserDto.nick,
       userId: newUser.id,
       email: newUser.email,
     });
@@ -165,7 +166,7 @@ export class AuthService {
       await this.emailQueue.add('reset', {
         userId: user.id,
         email: user.email,
-        name: user.name,
+        name: user.name ?? user.nick,
       });
       return true;
     } else if (data.type == 'resetPassword') {
