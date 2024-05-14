@@ -1,0 +1,28 @@
+name: fe-deploy
+on: 
+  push: 
+    branches: [master]
+    paths: fe/**
+  workflow_dispatch: 
+
+jobs:
+  #deploy
+  deploy:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Deploy DO
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{secrets.HOST}}
+          username: ${{secrets.USERNAME}}
+          key: ${{secrets.SSHKEY}}
+          script_stop: true
+          command_timeout: 5m
+          script: |
+            cd /home/reserva99
+            git pull
+            docker compose build --no-cache web
+            docker compose up -d web
