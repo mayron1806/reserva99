@@ -40,6 +40,14 @@ const CompanyPage = () => {
   );
 }
 const CompanyTable = ({ data }: {data: CompanyList}) => {
+  const handleNavigate = (subdomain: string) => {
+    const currentURL = new URL(window.location.href);
+    let domain = currentURL.hostname.includes(subdomain) ? currentURL.hostname.slice(subdomain.length, currentURL.hostname.length) : currentURL.hostname;
+    if (currentURL.port.length > 0) {
+      domain += `:${currentURL.port}`;
+    }
+    window.location.href =`${currentURL.protocol}//${subdomain}.${domain}/admin/schedule`;
+  }
   return (
     <Form method="post" className="min-w-80">
       <Table className="min-w-96">
@@ -52,7 +60,7 @@ const CompanyTable = ({ data }: {data: CompanyList}) => {
         <TableBody>
           {
             data.map(company => (
-              <TableRow className="cursor-pointer" key={company.id} onClick={() => window.location.href =`http://${company.identifier}.${window.ENV.DOMAIN}/admin`}>
+              <TableRow className="cursor-pointer" key={company.id} onClick={() => handleNavigate(company.identifier)}>
                 <TableCell className="font-medium">{company.name}</TableCell>
                 <TableCell>{company.identifier}</TableCell>
               </TableRow>

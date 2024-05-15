@@ -11,7 +11,7 @@ interface ErrorResponse {
 }
 export type HTTPResponse<T = undefined> = SuccessResponse<T> | ErrorResponse;
 const http = axios.create({
-  baseURL: typeof window === 'undefined' ? ENV.SERVER_URL : window.ENV.SERVER_URL,
+  baseURL: window.ENV.PUBLIC_SERVER_URL,
 });
 http.interceptors.response.use((res) => {
   const data = res.data;

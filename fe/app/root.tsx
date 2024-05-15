@@ -20,8 +20,7 @@ export async function loader() {
   return json({
     ENV: {
       NODE_ENV: ENV?.NODE_ENV,
-      DOMAIN: ENV?.DOMAIN,
-      SERVER_URL: ENV?.SERVER_URL
+      PUBLIC_SERVER_URL: ENV?.PUBLIC_SERVER_URL,
     },
   });
 }
