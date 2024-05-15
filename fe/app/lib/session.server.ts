@@ -10,7 +10,7 @@ export const sessionStorage = createCookieSessionStorage({
     maxAge: 60 * 60 * 24 * 7, // 7 dias
     secrets: [ENV.COOKIE_SESSION_SECRET],
     domain: ENV.COOKIE_DOMAIN,
-    secure: ENV.COOKIE_SECURE,
+    secure: ENV.SSL_ENABLED,
   },
 });
 export enum SessionData {

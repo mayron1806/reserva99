@@ -1,4 +1,4 @@
-import { HTTPResponse, http } from "~/lib/http";
+import { HTTPResponse, http } from "~/lib/http/http.server";
 import { getSubdomain } from "~/lib/subdomain.server";
 import { CreateReserve, Reserve } from "~/types/schedule";
 import { Token } from "~/types/token";

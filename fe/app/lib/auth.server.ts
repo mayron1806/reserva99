@@ -33,11 +33,6 @@ export const login = async (request: Request, account: string, password: string)
   
 }
 export const createAccount = async (nick: string, email: string, password: string) => {
-  console.log(nick);
-  console.log(email);
-  console.log(password);
-  console.log(ENV.SERVER_URL);
-  
   const { data } = await http.post<HTTPResponse>('/auth/create', { nick, email, password });
   return data; 
 }
@@ -71,8 +66,6 @@ export const authenticate = async (request: Request, headers: Headers): Promise<
     moment().isAfter(expirationDate) ||
     !session.get(SessionData.ACCESS_TOKEN)
   ) {
-    console.log('refresh');
-    
     const refreshResult = await refreshToken(session.get(SessionData.REFRESH_TOKEN));
     if (!refreshResult.success) {
       headersClone.append('Set-Cookie', await destroySession(session));
@@ -89,8 +82,6 @@ export const authenticate = async (request: Request, headers: Headers): Promise<
     headersClone.append('Set-Cookie', await commitSession(session));
     return { logged: true, headers: headersClone, token: refreshResult.data };
   }
-  console.log('no refresh');
-
   return { 
     logged: true, 
     headers: headersClone, 
