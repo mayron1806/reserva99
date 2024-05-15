@@ -1,45 +1,28 @@
 # base node image
-FROM node:18-bullseye-slim as base
+FROM node:20-alpine as builder
 
-# set for base and all layer that inherit from it
-ENV NODE_ENV production
-
-# Install all node_modules, including dev dependencies
-FROM base as deps
-
+USER node
 WORKDIR /app/client
 
-ADD package.json ./
-RUN npm install --include=dev
+COPY package*.json ./
+COPY *.lock ./
+RUN npm ci
 
-# Setup production node_modules
-FROM base as production-deps
+COPY --chown=node:node . .
 
-WORKDIR /app/client
-
-COPY --from=deps /app/client/node_modules /app/client/node_modules
-ADD package.json ./
-RUN npm prune --omit=dev
-
-# Build the app
-FROM base as build
-
-WORKDIR /app/client
-
-COPY --from=deps /app/client/node_modules /app/client/node_modules
-
-ADD . .
 RUN npm run build
 
-# Finally, build the production image with minimal footprint
-FROM base
 
+FROM node:20-alpine
+
+ENV NODE_ENV production
+
+USER node
 WORKDIR /app/client
 
-COPY --from=production-deps /app/client/node_modules /app/client/node_modules
-
-COPY --from=build /app/client/build/server /app/client/build/server
-COPY --from=build /app/client/build/client /app/client/build/client
-ADD . .
+COPY --from=builder --chown=node:node /app/client/package*.json ./
+COPY --from=builder --chown=node:node /app/client/node_modules/ ./node_modules/
+COPY --from=builder --chown=node:node /app/client/build/ ./build/
+COPY --from=builder --chown=node:node /app/client/.env ./.env
 
 CMD ["npm", "start"]
