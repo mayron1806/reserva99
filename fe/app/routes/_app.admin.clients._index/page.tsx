@@ -74,7 +74,7 @@ const ClientsPage = () => {
                   {client.lastReserveDate ? formatDate(client.lastReserveDate) : 'Sem agendamentos'}
                   </TableCell>
                   <TableCell className="hidden md:table-cell text-end">
-                    <Button variant="link" size="sm" onClick={() => navigate(`/admin/clients/update/${client.id}`)}>
+                    <Button size="sm" onClick={() => navigate(`/admin/clients/update/${client.id}`)}>
                       Editar
                     </Button>
                   </TableCell>

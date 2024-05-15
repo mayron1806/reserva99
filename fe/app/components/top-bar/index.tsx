@@ -15,7 +15,7 @@ const MenuItem = ({ href, children }: MenuItemProps) => {
   return (
     <a
       href={href}
-      className={twMerge('text-muted-foreground transition-colors text-nowrap hover:text-foreground', isSelected && 'text-foreground')}
+      className={twMerge('text-muted-foreground transition-colors text-nowrap hover:text-primary', isSelected && 'text-primary')}
     >
       {children}
     </a>
