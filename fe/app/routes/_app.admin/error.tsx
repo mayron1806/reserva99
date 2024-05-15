@@ -8,7 +8,7 @@ const ErrorBoundary = () => {
   const handleGoToSelect = () => {
     const currentURL = new URL(window.location.href);
     const domain = currentURL.hostname;
-    const url = `${currentURL.protocol}://${domain}/hub`;
+    const url = `${currentURL.protocol}//${domain}/hub`;
     window.location.href = url;
   }
   if (isRouteErrorResponse(error)) {
