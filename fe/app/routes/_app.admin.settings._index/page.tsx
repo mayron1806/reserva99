@@ -18,7 +18,6 @@ const GeneralPage = () => {
           <div className="flex gap-4">
             <Avatar className="w-20 h-20 lg:w-40 lg:h-40">
               <AvatarFallback>{data.name.slice(0, 2).toUpperCase()}</AvatarFallback>
-              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
             </Avatar>
             <div>
               <h3 className="text-xl font-bold">{data.name}</h3>

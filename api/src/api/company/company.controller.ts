@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Put, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { CompanyService } from './company.service';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
@@ -55,12 +55,13 @@ export class CompanyController {
   }
 
   @UseGuards(CompanyGuard)
-  @Patch(':companyIdentifier')
+  @Put(':companyIdentifier')
   async updateCompany(
     @Company("id") companyId: string,
     @Body() body: UpdateCompanyRequestDto,
   ) {
-    return await this.companyService.updateCompany(companyId, body);
+    const data = await this.companyService.updateCompany(companyId, body);
+    return data;
   }
   
   @UseGuards(CompanyGuard)
