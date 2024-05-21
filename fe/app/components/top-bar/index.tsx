@@ -27,10 +27,10 @@ const TopBar = () => {
     <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-white px-4 md:px-6 z-10">
       <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
         <a
-          href="/admin"
-          className="flex items-center gap-2 text-lg font-semibold md:text-base"
+          href="/admin/schedule"
+          className="flex items-center gap-2 text-lg font-semibold md:text-base w-8"
         >
-          <Package2 className="h-6 w-6" />
+          <img src="/logo.svg" alt="logo" />
           <span className="sr-only">Acme Inc</span>
         </a>
         <MenuItem href="/admin/schedule">Agendamentos</MenuItem>
@@ -42,9 +42,9 @@ const TopBar = () => {
       <Sheet>
         <SheetTrigger asChild>
           <Button
-            variant="outline"
-            size="icon"
-            className="shrink-0 md:hidden"
+            variant="ghost"
+            size="sm"
+            className="md:hidden"
           >
             <Menu className="h-5 w-5" />
             <span className="sr-only">Toggle navigation menu</span>
@@ -53,15 +53,16 @@ const TopBar = () => {
         <SheetContent side="left">
           <nav className="grid gap-6 text-lg font-medium">
             <a
-              href="/admin"
-              className="flex items-center gap-2 text-lg font-semibold md:text-base"
+              href="/admin/schedule"
+              className="flex items-center gap-2 text-lg font-semibold md:text-base w-8"
             >
-              <Package2 className="h-6 w-6" />
+              <img src="/logo.svg" alt="logo" />
               <span className="sr-only">Acme Inc</span>
             </a>
             <MenuItem href="/admin/schedule">Agendamentos</MenuItem>
+            <MenuItem href="/admin/clients">Clientes</MenuItem>
+            <MenuItem href="/admin/services">Serviços</MenuItem>
             <MenuItem href="/admin/cashflow">Fluxo de caixa</MenuItem>
-            <MenuItem href="/admin/member">Membros</MenuItem>
             <MenuItem href="/admin/settings">Configurações</MenuItem>
           </nav>
         </SheetContent>

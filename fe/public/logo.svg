@@ -1,0 +1,13 @@
+<svg width="292" height="236" viewBox="0 0 292 236" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M10 20L10 226" stroke="#52EBFF" stroke-width="20" stroke-linecap="round"/>
+<path d="M282 20L282 226" stroke="#52EBFF" stroke-width="20" stroke-linecap="round"/>
+<path d="M242 20L282 20" stroke="#52EBFF" stroke-width="20" stroke-linecap="round"/>
+<path d="M10 20L50 20" stroke="#52EBFF" stroke-width="20" stroke-linecap="round"/>
+<path d="M10 226H282" stroke="#52EBFF" stroke-width="20" stroke-linecap="round"/>
+<rect x="93" width="40" height="20" rx="10" transform="rotate(90 93 0)" fill="#1E1E1E"/>
+<rect x="219" width="40" height="20" rx="10" transform="rotate(90 219 0)" fill="#1E1E1E"/>
+<circle cx="101.948" cy="105.948" r="36.5" transform="rotate(39.5922 101.948 105.948)" stroke="#1E1E1E" stroke-width="15"/>
+<rect x="126.125" y="122.182" width="15" height="86" transform="rotate(40.0701 126.125 122.182)" fill="#1E1E1E"/>
+<circle cx="184.948" cy="105.948" r="36.5" transform="rotate(39.5922 184.948 105.948)" stroke="#1E1E1E" stroke-width="15"/>
+<rect x="209.125" y="122.182" width="15" height="86" transform="rotate(40.0701 209.125 122.182)" fill="#1E1E1E"/>
+</svg>
