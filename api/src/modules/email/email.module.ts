@@ -22,7 +22,7 @@ import { env } from 'src/constants/env';
           },
         },
         defaults: {
-          from: 'Reserva99 <mayron.g.fernandes@gmail.com>',
+          from: '99 Agendamentos <noreply@99agendamentos.com.br>',
         },
         template: {
           dir: join(process.cwd(), 'dist/templates/email'),
