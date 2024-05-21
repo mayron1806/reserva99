@@ -59,7 +59,7 @@ const ServicesPage = () => {
                     {t.variants && t.variants?.length > 0 ? `${t.variants.length} variações` : 'Sem variações'}
                   </TableCell>
                   <TableCell className="hidden md:table-cell text-end">
-                    <Button size="sm" variant="link" onClick={() => navigate(`/admin/services/update/${t.id}`)}>
+                    <Button size="sm" onClick={() => navigate(`/admin/services/update/${t.id}`)}>
                       Editar 
                     </Button>
                   </TableCell>

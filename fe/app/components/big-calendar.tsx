@@ -104,9 +104,9 @@ const BigCalendar = ({ reserves, defaultDate = new Date(), weekTime, onSelectRes
               </Tabs>
               <h2>{label}</h2>
               <div className="space-x-2">
-                <Button variant="secondary" onClick={() => onNavigate('PREV')}>Anterior</Button>
-                <Button variant="secondary" onClick={() => onNavigate('TODAY')}>Hoje</Button>
-                <Button variant="secondary" onClick={() => onNavigate('NEXT')}>Proximo</Button>
+                <Button variant="outline" onClick={() => onNavigate('PREV')}>Anterior</Button>
+                <Button variant="outline" onClick={() => onNavigate('TODAY')}>Hoje</Button>
+                <Button variant="outline" onClick={() => onNavigate('NEXT')}>Proximo</Button>
               </div>
             </div>
           );

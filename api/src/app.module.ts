@@ -11,8 +11,8 @@ import { PaymentModule } from './api/payment/payment.module';
 import { CompanyModule } from './api/company/company.module';
 import { BullModule } from '@nestjs/bull';
 import { env } from 'src/constants/env';
-import { CacheModule as CM } from '@nestjs/cache-manager';
-import * as redisStore from 'cache-manager-redis-store';
+import { CacheModule } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-yet';
 
 @Module({
   imports: [
@@ -39,10 +39,13 @@ import * as redisStore from 'cache-manager-redis-store';
         port: parseInt(env.REDIS_PORT),
       },
     }),
-    CM.register({
-      store: redisStore,
-      url: env.REDIS_URL,
-      ttl: 5 * 60,
+    CacheModule.registerAsync({
+      useFactory: async () => ({
+        store: await redisStore({
+          ttl: 60 * 5,
+          url: env.REDIS_URL,
+        })
+      }),
       isGlobal: true
     }),
     RepositoryModule,

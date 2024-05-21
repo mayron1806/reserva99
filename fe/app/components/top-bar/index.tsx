@@ -15,7 +15,7 @@ const MenuItem = ({ href, children }: MenuItemProps) => {
   return (
     <a
       href={href}
-      className={twMerge('text-muted-foreground transition-colors text-nowrap hover:text-foreground', isSelected && 'text-foreground')}
+      className={twMerge('text-muted-foreground transition-colors text-nowrap hover:text-primary', isSelected && 'text-primary')}
     >
       {children}
     </a>
@@ -33,9 +33,9 @@ const TopBar = () => {
           <Package2 className="h-6 w-6" />
           <span className="sr-only">Acme Inc</span>
         </a>
+        <MenuItem href="/admin/schedule">Agendamentos</MenuItem>
         <MenuItem href="/admin/clients">Clientes</MenuItem>
         <MenuItem href="/admin/services">Serviços</MenuItem>
-        <MenuItem href="/admin/schedule">Agendamentos</MenuItem>
         <MenuItem href="/admin/cashflow">Fluxo de caixa</MenuItem>
         <MenuItem href="/admin/settings">Configurações</MenuItem>
       </nav>
