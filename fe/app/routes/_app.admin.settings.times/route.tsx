@@ -1,6 +1,10 @@
 import { action } from "./action";
 import { loader } from "./loader";
 import TimesPage from "./page";
-
-export { loader, action };
+const meta = () => {
+  return [
+    { title: "Configurações | 99Agendamentos" }
+  ];
+};
+export { loader, action, meta };
 export default TimesPage;

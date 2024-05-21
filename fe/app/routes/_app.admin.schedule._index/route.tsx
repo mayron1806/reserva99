@@ -1,5 +1,9 @@
 import { loader } from "./loader";
 import SchedulePage from "./page";
-
-export { loader };
+const meta = () => {
+  return [
+    { title: "Início | 99Agendamentos" }
+  ];
+};
+export { loader, meta };
 export default SchedulePage;
