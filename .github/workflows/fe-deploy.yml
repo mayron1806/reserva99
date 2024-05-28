@@ -20,7 +20,7 @@ jobs:
           username: ${{secrets.USERNAME}}
           key: ${{secrets.SSHKEY}}
           script_stop: true
-          command_timeout: 5m
+          command_timeout: 15m
           script: |
             cd /home/reserva99
             git pull
