@@ -1,6 +1,6 @@
 import { Optional } from "@nestjs/common";
 import { Company } from "@prisma/client";
-import { IsNotEmpty, IsString, Length, Matches, MaxLength, ValidateNested } from "class-validator";
+import { IsNotEmpty, IsString, Length, Matches, MaxLength, MinLength, ValidateNested } from "class-validator";
 import { CreateOrUpdateTimeRequest } from "../subroutes/time/dto/create-time";
 import { Type } from "class-transformer";
 
@@ -39,7 +39,7 @@ export class Address {
   zipCode: string;
 }
 export class CreateCompanyRequestDto {
-  @Length(3, 40, { message: "O campo nome deve ter entre 3 e 40 caracteres"})
+  @MinLength(3, { message: "O campo nome deve ter no mínimo caracteres"})
   name: string;
 
   @Optional()

@@ -32,7 +32,7 @@ export class CompanyGuard implements CanActivate {
       if(!company) {
         throw new NotFoundException(`Companhia com identificador ${companyIdentifier} não encontrado ou você não tem acesso a ele.`);
       }
-      this.cacheManager.set(`company_${companyIdentifier}`, company, 60);
+      this.cacheManager.set(`company_${companyIdentifier}`, company, 60 * 1000);
       this.logger.debug('companhia salva no cache');
     }
     const isPublic = this.reflector.get<boolean>('isPublic', context.getHandler());

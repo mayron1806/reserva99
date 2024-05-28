@@ -8,10 +8,20 @@ import { CreateReserveRequestDto } from './dto/create-reserve';
 import { Availability, TimeAvailability } from './types';
 import { UpdateReserveRequestDto } from './dto/update-reserve';
 import { GetBasicReserveResponseDto } from './dto/get-basic-reserve';
+import { CashflowService } from '../cashflow/cashflow.service';
+import { CreateTransactionRequest } from '../cashflow/dto/create-transaction';
+import { TransactionStatus } from 'src/types/transaction-status';
+import { PaymentStatus } from 'src/types/payment';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
 
 @Injectable()
 export class ReserveService {
-  constructor(private readonly txHost: TransactionHost<TransactionalAdapterPrisma>) {}
+  constructor(
+    private readonly txHost: TransactionHost<TransactionalAdapterPrisma>,
+    private readonly cashflowService: CashflowService,
+    @InjectQueue('remember-reserve') private readonly rememberReserveQueue: Queue,
+  ) {}
   private readonly granularity = 15;
 
   async getReserveById(companyId: string, reserveId: string) {
@@ -37,7 +47,7 @@ export class ReserveService {
       GetBasicReserveResponseDto.mapToResponse(r, r.client, r.service, r.variant)
     );
   }
-  private getAvailableTimes(date: Date, weekTime: WeekTime, duration: number, reserves: Reserve[]) {
+  private getAvailableTimes(date: Date, weekTime: WeekTime, duration: number, reserves: Reserve[], ignoreEndTime = false) {
     const dayOfWeek = moment(date).weekday();
     let dayTimes = weekTime.monday;
     switch(dayOfWeek) {
@@ -77,6 +87,7 @@ export class ReserveService {
         times.push({ time: currentHour.toDate(), available: true });
         currentHour.add(this.granularity, 'minutes');
       } while(moment(currentHour).isBefore(endHour));
+      
       availableHours.push({
         start: startHour.toDate(),
         end: endHour.toDate(),
@@ -110,15 +121,18 @@ export class ReserveService {
       const times = availableHour.times.map(({ available, time }, timeIndex) => {
         // caso ja tenha sido marcado como não disponivel então vai ignorar a hora.
         if (!available) return { available, time };
-        // verifica se a hora atual + a duração vai passar da hora do fim de expediente.
-        if (moment(moment(time).add(duration, 'seconds')).isAfter(availableHour.end)) {
-          return { available: false, time };
+        if (!ignoreEndTime) {
+          // verifica se a hora atual + a duração vai passar da hora do fim de expediente.
+          if (moment(moment(time).add(duration, 'seconds')).isAfter(availableHour.end)) {
+            return { available: false, time };
+          }
         }
         // verifica se os proximos horarios estão disponiveis para agendamento de acordo com a duração.
         const durationInMinutes = duration / 60;
         const durationSteps = Math.floor(durationInMinutes / this.granularity);
-        for (let index = 0; index < durationSteps; index++) {
-          if (!availableHour.times.at(timeIndex + index)?.available) {
+        for (let index = 0; index < durationSteps; index++) {          
+          const nextHour = availableHour.times.at(timeIndex + index);
+          if (!!nextHour && !nextHour.available) {
             return { available: false, time };
           }          
         }
@@ -132,22 +146,14 @@ export class ReserveService {
    
     return result;
   }
-  private verifyAvailability(timeAvailability: Availability[], startDate: Date, endDate: Date) {
+  private verifyAvailability(timeAvailability: Availability[], reserveTime: Date) {
     const res = timeAvailability.some(t => {
       let unavailable = false;
-      let started = false;
       t.times.forEach(({ available, time }) => {
         if (unavailable) return;
-        // se esta entre a hora de inicio e fim e não iniciou a validação
-        if (moment(time).isBetween(startDate, endDate) && !started) {
-          started = true;
-        }
-        if (started) {
-          if (moment(time).isSameOrBefore(endDate)) {
-            if (!available) {
-              unavailable = true;
-            }
-          }
+        // se esta entre a hora de da reserva
+        if (moment(time) === moment(reserveTime)) {
+          unavailable = !available;
         }
       });
       return !unavailable;
@@ -211,10 +217,10 @@ export class ReserveService {
     }
     const { duration, price, description } = await this.getServiceData(serviceId, variantId);
     const reserves = await this.getReservesByDate(companyId, date);
-    const availableTimes = this.getAvailableTimes(date, weekTimes, duration, reserves);
+    const availableTimes = this.getAvailableTimes(date, weekTimes, duration, reserves, true);
     const startDate = moment(date).seconds(0).milliseconds(0).toDate(); 
     const endDate = moment(startDate).add(duration, 'seconds').toDate();
-    const isAvailable = this.verifyAvailability(availableTimes, startDate, endDate);
+    const isAvailable = this.verifyAvailability(availableTimes, startDate);
     
     if (!rest.hardSet && !isAvailable) throw new BadRequestException('O horário já está ocupado.');
     
@@ -240,12 +246,44 @@ export class ReserveService {
             company: { connect: { id: companyId } },
           }
         }
-      }, 
+      },
+      include: {
+        client: true,
+        service: true
+      }
     });
+    if(rest.paymentStatus === PaymentStatus.Paid) {
+      const transaction = new CreateTransactionRequest();
+      transaction.name = `${reserve.service.name} - ${reserve.client.name}`;
+      transaction.status = TransactionStatus.PAID;
+      transaction.type = 'Invoice';
+      transaction.value = reserve.price;
+      transaction.date = new Date();
+      await this.cashflowService.createTransaction(companyId, transaction);
+    }
+
+
     await this.txHost.tx.client.update({
       where: { id: reserve.clientId },
       data: { lastReserveDate: startDate }
     });
+    // notify 1 day before
+    const oneDayBeforeTime = moment(reserve.startDate).subtract(1, 'day');
+    if (oneDayBeforeTime.isAfter(moment())) {
+      const delay = Number(oneDayBeforeTime.toDate()) - Number(moment().toDate());
+      await this.rememberReserveQueue.add('send-email', { reserveId: reserve.id }, {
+        delay
+      })
+    }
+    // notify 1 hour before
+    const oneHourBeforeTime = moment(reserve.startDate).subtract(1, 'hour');
+    if (oneHourBeforeTime.isAfter(moment())) {
+      const delay = Number(oneHourBeforeTime.toDate()) - Number(moment().toDate());
+      await this.rememberReserveQueue.add('send-email', { reserveId: reserve.id }, {
+        delay
+      })
+    }
+
     return reserve;
   }
   @Transactional()
@@ -266,10 +304,10 @@ export class ReserveService {
     }
     const { duration } = await this.getServiceData(reserve.serviceId, reserve.variantId);
     const reserves = await this.getReservesByDate(companyId, date);
-    const availableTimes = this.getAvailableTimes(date, weekTimes, duration, reserves);
+    const availableTimes = this.getAvailableTimes(date, weekTimes, duration, reserves, true);
     const startDate = moment(date).seconds(0).milliseconds(0).toDate(); 
     const endDate = moment(startDate).add(duration, 'seconds').toDate();
-    const isAvailable = this.verifyAvailability(availableTimes, startDate, endDate);
+    const isAvailable = this.verifyAvailability(availableTimes, startDate);
     
     if (!isAvailable) throw new BadRequestException('O horário já está ocupado');
     const updatedReserve = await this.txHost.tx.reserve.update({

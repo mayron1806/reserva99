@@ -1,4 +1,5 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsPositive, Validate, ValidateNested } from "class-validator";
+import { IsEmail, IsIn, IsNotEmpty, IsOptional, IsPositive, Validate, ValidateNested } from "class-validator";
+import { PaymentStatus } from "src/types/payment";
 import { isValidISO8601Date } from "src/validation/iso-date";
 class Client {
   @IsNotEmpty({ message: 'O campo nome é obrigatorio.' })
@@ -18,8 +19,8 @@ export class CreateReserveRequestDto {
   @IsOptional()
   status?: string;
   
-  @IsOptional()
-  paymentStatus?: string;
+  @IsIn([PaymentStatus.Paid, PaymentStatus.Unpaid], { message: 'Status de pagamento inválido' })
+  paymentStatus: PaymentStatus;
   
   @IsOptional()
   paymentMethod?: string;

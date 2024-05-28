@@ -49,6 +49,7 @@ const ClientsPage = () => {
                 <TableHead className="w-1/4 md:w-1/5">Nome</TableHead>
                 <TableHead className="w-1/4 md:w-1/5">E-mail</TableHead>
                 <TableHead className="w-1/4 md:w-1/5">Telefone</TableHead>
+                <TableHead className="hidden sm:table-cell">Agendamentos</TableHead>
                 <TableHead className="hidden md:table-cell w-full">Ultimo agendamento</TableHead>
                 <TableHead></TableHead>
               </TableRow>
@@ -67,8 +68,11 @@ const ClientsPage = () => {
                   <TableCell>
                     {client.email ? client.email : '-'}
                   </TableCell>
-                  <TableCell className="hidden md:table-cell">
+                  <TableCell>
                     {client.phone ? client.phone : '-'}
+                  </TableCell>
+                  <TableCell className="hidden sm:table-cell">
+                    {client.reserveCount ? client.reserveCount : '-'}
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
                   {client.lastReserveDate ? formatDate(client.lastReserveDate) : 'Sem agendamentos'}

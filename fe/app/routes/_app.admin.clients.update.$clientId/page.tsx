@@ -18,7 +18,6 @@ const UpdateService = () => {
   const fetcher = useFetcher();
   const data: LoaderData = useLoaderData<typeof loader>();
   const isSubmitting = fetcher.state === 'submitting';
-  
   //#region form
   const {
     handleSubmit,
@@ -32,8 +31,8 @@ const UpdateService = () => {
     defaultValues: {
       name: data.data?.name,
       alias: data.data?.alias,
-      email: data.data?.email,
-      phone: data.data?.phone
+      email: data.data?.email ? data.data?.email : '',
+      phone: data.data?.phone ? data.data?.phone : '',
     }
   });
   //#endregion
@@ -43,14 +42,14 @@ const UpdateService = () => {
     onSuccess() {
       toast({
         title: 'Sucesso',
-        description: 'Serviço atualizado com sucesso',
+        description: 'Cliente atualizado com sucesso',
       });
       navigate('/admin/clients');
     },
     onError(message) {
       toast({
         title: 'Erro',
-        description: message ?? 'Ocorreu um erro ao tentar atualizar o serviço',
+        description: message ?? 'Ocorreu um erro ao tentar atualizar o cliente',
         variant: 'destructive'
       });
     },

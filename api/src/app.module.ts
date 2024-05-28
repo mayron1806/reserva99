@@ -42,7 +42,6 @@ import { redisStore } from 'cache-manager-redis-yet';
     CacheModule.registerAsync({
       useFactory: async () => ({
         store: await redisStore({
-          ttl: 60 * 5,
           url: env.REDIS_URL,
         })
       }),

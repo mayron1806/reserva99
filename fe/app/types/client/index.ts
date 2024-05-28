@@ -5,6 +5,7 @@ export type Client = {
   email?: string;
   phone?: string;
   lastReserveDate?: Date;
+  reserveCount?: number;
 }
 export type CreateClient = {
   name: string;

@@ -14,6 +14,8 @@ export const editCompanySchema = z.object({
       .min(1, 'O estado é obrigatório'),
     city: z.string()
       .min(1, 'A cidade é obrigatória'),
+    district: z.string()
+      .min(1, 'O bairro é obrigatório'),
     street: z.string()
       .min(1, 'A rua é obrigatória'),
     number: z.string()

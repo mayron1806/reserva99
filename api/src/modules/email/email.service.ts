@@ -24,6 +24,7 @@ export class EmailService {
       subject,
       template: `./${template}`,
       context: data,
+      sender: 'em9632.99agendamentos.com.br',
       html: EmailTemplates[template](data)
     });
   }

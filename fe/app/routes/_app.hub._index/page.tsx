@@ -8,7 +8,14 @@ import { toast } from "~/components/ui/use-toast";
 import { CompanyList } from "~/types/company";
 import { CircleX, NavigationOffIcon } from "lucide-react";
 import CreateCompanyDialog from "./components/create-company-dialog";
-
+const handleNavigate = (subdomain: string) => {
+  const currentURL = new URL(window.location.href);
+  let domain = currentURL.hostname.includes(subdomain) ? currentURL.hostname.slice(subdomain.length, currentURL.hostname.length) : currentURL.hostname;
+  if (currentURL.port.length > 0) {
+    domain += `:${currentURL.port}`;
+  }
+  window.location.href =`${currentURL.protocol}//${subdomain}.${domain}/admin/schedule`;
+}
 const CompanyPage = () => {
   const data: LoaderData = useLoaderData<typeof loader>();
   useEffect(() => {
@@ -40,14 +47,6 @@ const CompanyPage = () => {
   );
 }
 const CompanyTable = ({ data }: {data: CompanyList}) => {
-  const handleNavigate = (subdomain: string) => {
-    const currentURL = new URL(window.location.href);
-    let domain = currentURL.hostname.includes(subdomain) ? currentURL.hostname.slice(subdomain.length, currentURL.hostname.length) : currentURL.hostname;
-    if (currentURL.port.length > 0) {
-      domain += `:${currentURL.port}`;
-    }
-    window.location.href =`${currentURL.protocol}//${subdomain}.${domain}/admin/schedule`;
-  }
   return (
     <Form method="post" className="min-w-80">
       <Table className="min-w-96">
@@ -78,7 +77,7 @@ const NoCompanyData = () =>  {
       <h1 className="text-3xl font-bold">Nenhuma companhia</h1>
       <NavigationOffIcon className="w-20 h-20 text-secondary"/>
       <p className="text-muted-foreground">Você não está cadastrado em nenhuma companhia, mas não se preocupe, você pode criar a sua clicando no botão abaixo.</p>
-      <CreateCompanyDialog />
+      <CreateCompanyDialog handleNavigate={handleNavigate} />
     </div>
   );
 }

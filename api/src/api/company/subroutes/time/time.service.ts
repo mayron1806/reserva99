@@ -36,6 +36,15 @@ export class TimeService {
     if(!validHours) {
       throw new BadRequestException('Verifique os dados das horas informados.');
     }
+
+    body.monday = body.monday.filter(time => time.start && time.start.length === 5 && time.end && time.end.length === 5);
+    body.tuesday = body.tuesday.filter(time => time.start && time.start.length === 5 && time.end && time.end.length === 5);
+    body.wednesday = body.wednesday.filter(time => time.start && time.start.length === 5 && time.end && time.end.length === 5);
+    body.thursday = body.thursday.filter(time => time.start && time.start.length === 5 && time.end && time.end.length === 5);
+    body.friday = body.friday.filter(time => time.start && time.start.length === 5 && time.end && time.end.length === 5);
+    body.saturday = body.saturday.filter(time => time.start && time.start.length === 5 && time.end && time.end.length === 5);
+    body.sunday = body.sunday.filter(time => time.start && time.start.length === 5 && time.end && time.end.length === 5);
+
     const times = await this.txHost.tx.times.upsert({
       where: {
         companyId: companyId,

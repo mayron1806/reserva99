@@ -1,5 +1,9 @@
 import { loader } from "./loader";
 import ActiveAccountPage from "./page";
-
-export { loader };
+const meta = () => {
+  return [
+    { title: "Ativar conta | 99Agendamentos" }
+  ];
+};
+export { loader, meta };
 export default ActiveAccountPage;

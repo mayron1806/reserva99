@@ -19,7 +19,8 @@ type TimeSelectItemProps = {
 export const TimeSelectItem = ({ setSelected, value, selectedItem, disabled}: TimeSelectItemProps) => {
   return (
     <div
-      onClick={() => setSelected(value)}
+      aria-disabled={disabled}
+      onClick={() => !disabled  && setSelected(value)}
       className={cn(
         "flex gap-2 justify-center w-full bg-primary text-primary-foreground p-2 rounded-lg cursor-pointer",
         disabled && ' cursor-not-allowed bg-muted text-muted-foreground'

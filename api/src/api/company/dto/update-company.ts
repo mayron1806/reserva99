@@ -1,6 +1,6 @@
 import { Optional } from "@nestjs/common";
 import { Company } from "@prisma/client";
-import { IsNotEmpty, IsString, Length, Matches, MaxLength, ValidateNested } from "class-validator";
+import { IsNotEmpty, IsString, Length, Matches, MaxLength, MinLength, ValidateNested } from "class-validator";
 
 export class Address {
   @IsNotEmpty({ message: 'O país é obrigatório' })
@@ -38,7 +38,7 @@ export class Address {
 }
 export class UpdateCompanyRequestDto {
   @Optional()
-  @Length(3, 40, { message: "O campo nome deve ter entre 3 e 40 caracteres"})
+  @MinLength(3, { message: "O campo nome deve ter no mínimo caracteres"})
   name?: string;
 
   @Optional()

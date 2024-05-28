@@ -53,13 +53,13 @@ const WorkTime = () => {
     reset();
     setValue('edit', edit);
     if (edit) {
-      fields.monday.append({});
-      fields.tuesday.append({});
-      fields.wednesday.append({});
-      fields.thursday.append({});
-      fields.friday.append({});
-      fields.saturday.append({});
-      fields.sunday.append({});
+      if (data.weektimes.monday?.length === 0) fields.monday.append({});
+      if (data.weektimes.tuesday?.length === 0) fields.tuesday.append({});
+      if (data.weektimes.wednesday?.length === 0) fields.wednesday.append({});
+      if (data.weektimes.thursday?.length === 0) fields.thursday.append({});
+      if (data.weektimes.friday?.length === 0) fields.friday.append({});
+      if (data.weektimes.saturday?.length === 0) fields.saturday.append({});
+      if (data.weektimes.sunday?.length === 0) fields.sunday.append({});
     }
   }
   useActionCallback<WeekTime>(undefined, {

@@ -20,6 +20,7 @@ import { TimeSelect, TimeSelectItem } from "./components/time-select";
 import { useActionCallback } from "~/hooks/use-action-callback";
 import { toast } from "~/components/ui/use-toast";
 import Radio from "~/components/radio-group";
+import DateTimePicker from "~/components/date-time-picker";
 
 const CreateSchedulePage = () => {
   const data: LoaderData = useLoaderData<typeof loader>();
@@ -230,7 +231,7 @@ const CreateSchedulePage = () => {
               }
               {
                 isServiceSelected &&
-                <div className="flex gap-2 flex-col sm:flex-row">
+                <div className="grid grid-cols-2 gap-2 mb-4">
                   <InputWithLabel
                     label="Preço: *"
                     disabled
@@ -246,6 +247,13 @@ const CreateSchedulePage = () => {
                       selectedService.variants?.find(v => v.id === watch('variantId'))?.duration! : 
                       selectedService?.duration!)
                     }
+                  />
+                  <Radio
+                    className="col-span-2"
+                    value={`${watch('paymentStatus')}`} 
+                    onValueChange={(v)=> setValue('paymentStatus', v)}
+                    options={[{label: 'Sim', value: 'paid'}, {label: 'Não', value: 'unpaid'}]}
+                    label="O pagamento já foi efetuado? *"
                   />
                 </div>
               }

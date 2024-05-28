@@ -12,14 +12,18 @@ import { ActionResponse } from "~/types/action-response";
 import { useEffect, useState } from "react";
 import { toast } from "~/components/ui/use-toast";
 import { useRemixForm } from "remix-hook-form";
+import { useCep } from "~/hooks/use-cep";
 
 const EditCompanyDialog = () => {
   const [open, setOpen] = useState(false);
   const data: LoaderData = useLoaderData<typeof loader>();
   const fetcher = useFetcher<ActionResponse<LoaderData>>();
+  const { getCepData, isLoading: isLoadingCep } = useCep();
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors, isSubmitSuccessful }
   } = useRemixForm<EditCompanySchema>({
     resolver: zodResolver(editCompanySchema),
@@ -57,6 +61,23 @@ const EditCompanyDialog = () => {
       });
     }
   }, [fetcher.state, fetcher.data])
+
+  const cep = watch('address.zipCode');
+  useEffect(() => {
+    if (cep?.length === 9) {
+      const getCep = async () => {
+        const address = await getCepData(cep);
+        if (address) {
+          setValue('address.country', address.country);
+          setValue('address.state', address.state);
+          setValue('address.district', address.district);
+          setValue('address.city', address.city);
+          setValue('address.street', address.street);
+        }
+      }
+      getCep();
+    }
+  }, [cep]);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -76,12 +97,12 @@ const EditCompanyDialog = () => {
             <Separator />
             <InputWithLabel label="CEP:" {...register('address.zipCode')}/>
             <div className="grid grid-cols-2 gap-2">
-              <InputWithLabel label="País:" {...register('address.country')} autoComplete="address-line1" />
-              <InputWithLabel label="Estado:" {...register('address.state')} autoComplete="address-line2"/>
-              <InputWithLabel label="Cidade:" {...register('address.city')} autoComplete="address-line3"/>
-              <InputWithLabel label="Rua:" {...register('address.street')} />
-              <InputWithLabel label="Número:" {...register('address.number')} />
-              <InputWithLabel label="Complemento:" {...register('address.complement')} />
+              <InputWithLabel disabled={isLoadingCep} label="País:" {...register('address.country')} autoComplete="address-line1" />
+              <InputWithLabel disabled={isLoadingCep} label="Estado:" {...register('address.state')} autoComplete="address-line2"/>
+              <InputWithLabel disabled={isLoadingCep} label="Cidade:" {...register('address.city')} autoComplete="address-line3"/>
+              <InputWithLabel disabled={isLoadingCep} label="Rua:" {...register('address.street')} />
+              <InputWithLabel disabled={isLoadingCep} label="Número:" {...register('address.number')} />
+              <InputWithLabel disabled={isLoadingCep} label="Complemento:" {...register('address.complement')} />
             </div>
           </div>
           <DialogFooter>

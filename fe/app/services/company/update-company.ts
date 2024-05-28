@@ -5,7 +5,7 @@ import { Token } from "~/types/token";
 
 export const updateCompany = async (request: Request, token: Token, body: unknown) => {
   const subdomain = getSubdomain(request);
-  const { data } = await http.patch<HTTPResponse<Company>>(`/company/${subdomain}`, body, {
+  const { data } = await http.put<HTTPResponse<Company>>(`/company/${subdomain}`, body, {
     headers: { 'Authorization': `Bearer ${token.accessToken}`}
   });
   return data;
