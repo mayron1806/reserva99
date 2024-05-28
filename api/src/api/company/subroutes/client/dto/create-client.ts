@@ -1,11 +1,11 @@
-import { IsNotEmpty, IsEmail, IsOptional, IsPhoneNumber, Length } from 'class-validator';
+import { IsNotEmpty, IsEmail, IsOptional, IsPhoneNumber, MaxLength } from 'class-validator';
 
 export class CreateClientRequestDto {
   @IsNotEmpty({ message: 'O nome é obrigatório.' })
   name: string;
 
   @IsOptional()
-  @Length(1, 50, { message: 'O alias deve ter no máximo 50 caracteres.' })
+  @MaxLength(50, { message: 'O alias deve ter no máximo 50 caracteres.' })
   alias?: string;
 
   @IsOptional()

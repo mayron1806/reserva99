@@ -1,8 +1,7 @@
-import { Body, Controller, Delete, Get, Logger, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ReserveService } from './reserve.service';
 import { JwtGuard } from 'src/guard/jwt.guard';
 import { CompanyGuard } from 'src/guard/company.guard';
-import { Public } from 'src/decorators/public.decorator';
 import { Company } from 'src/decorators/company.decorator';
 import { CreateReserveRequestDto } from './dto/create-reserve';
 import { UpdateReserveDateRequestDto } from './dto/update-reserve-date';

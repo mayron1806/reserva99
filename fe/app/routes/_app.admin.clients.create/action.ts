@@ -13,11 +13,13 @@ export const action = withAuthAction(async ({ request, token }) => {
   if (errors) {
     return json({ errors, defaultValues });
   }
+  console.log(data);
+  
   const result = await createClient(request, token, {
     name: data.name,
     alias: data.alias,
-    email: data.email,
-    phone: `+55 ${data.phone}`,
+    email: !!data.email ? data.email : undefined,
+    phone: !!data.phone ? `+55 ${data.phone}` : undefined,
   });
   if (!result.success) {
     return json({ ok: false, error: result.errorMessage } as ActionResponse);

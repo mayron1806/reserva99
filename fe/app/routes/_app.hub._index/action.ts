@@ -22,6 +22,5 @@ export const action = withAuthAction(async ({ request, token }) => {
   if (!response.success) {
     return json({ ok: false, error: response.errorMessage } as ActionResponse<Company>)
   }
-  const sslEnabled = ENV.SSL_ENABLED;
-  return redirect(`http${sslEnabled ? 's' : ''}://${response.data.identifier}.${ENV.DOMAIN}/admin`);
+  return json({ ok: true, data: response.data } as ActionResponse<Company>)
 });

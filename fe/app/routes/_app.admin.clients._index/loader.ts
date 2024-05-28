@@ -3,7 +3,7 @@ import { withAuthLoader } from "~/middlewares/with-auth-loader";
 import { getClient } from "~/services/client/get-client";
 import { Client } from "~/types/client";
 export type LoaderData = {
-  clients: Client[]
+  clients: Client[];
 }
 export const loader = withAuthLoader(async ({ headers, request, token, }) => {
   const url = new URL(request.url);

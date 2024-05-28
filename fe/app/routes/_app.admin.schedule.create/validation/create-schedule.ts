@@ -9,6 +9,7 @@ export const createScheduleSchema = z.object({
   variantId: z.string().optional(),
   date: z.string().min(1, 'O campo data é obrigatório'),
   paymentStatus: z.string().optional(),
+  paymentDate: z.string().optional(),
   description: z.string().max(2000, { message: 'A descrição deve ter no máximo 2000 caracteres' }).optional(),
   price: z.string(),
   duration: z.string(),

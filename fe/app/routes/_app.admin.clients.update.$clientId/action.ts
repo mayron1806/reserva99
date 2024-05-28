@@ -31,8 +31,8 @@ const updateClientAction = async (request: Request, token: Token, params: Params
   const result = await updateClient(request, token, {
     name: data.name,
     alias: data.alias,
-    email: data.email,
-    phone: `+55 ${data.phone}`,
+    email: !!data.email ? data.email : undefined,
+    phone: !!data.phone ? `+55 ${data.phone}` : undefined,
   }, params.clientId!);
   if (!result.success) {
     return json({ ok: false, error: result.errorMessage } as ActionResponse);

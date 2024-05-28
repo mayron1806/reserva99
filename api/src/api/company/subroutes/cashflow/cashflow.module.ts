@@ -5,5 +5,6 @@ import { CashflowController } from './cashflow.controller';
 @Module({
   controllers: [CashflowController],
   providers: [CashflowService],
+  exports: [CashflowService]
 })
 export class CashflowModule {}

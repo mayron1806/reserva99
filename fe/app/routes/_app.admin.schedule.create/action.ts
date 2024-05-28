@@ -18,6 +18,7 @@ export const action = withAuthAction(async ({ request, token }) => {
     date: moment(data.date).toDate(),
     serviceId: data.serviceId,
     variantId: data.variantId,
+    paymentStatus: data.paymentStatus,
     client: data.client ? {
       name: data.client.name,
       alias: data.client.alias,

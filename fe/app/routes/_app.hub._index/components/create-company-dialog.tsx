@@ -18,8 +18,12 @@ import { ScrollArea } from "~/components/ui/scroll-area";
 import { CheckboxWithLabel } from "~/components/checkbox-with-label";
 import { useActionCallback } from "~/hooks/use-action-callback";
 import { toast } from "~/components/ui/use-toast";
-
-const CreateCompanyDialog = () => {
+import { Company } from "~/types/company";
+import { ActionResponse } from "~/types/action-response";
+type Props = {
+  handleNavigate: (subdomain: string) => void;
+}
+const CreateCompanyDialog = ({ handleNavigate }: Props) => {
   const { getCepData, isLoading: isLoadingCep } = useCep();
   const fetcher = useFetcher();
   const isLoading = fetcher.state === 'submitting';
@@ -45,7 +49,11 @@ const CreateCompanyDialog = () => {
       }
     }
   });
-  useActionCallback(fetcher, {
+  useActionCallback<ActionResponse<Company>>(fetcher, {
+    onSuccess(data?: ActionResponse<Company>) {
+      if (data?.ok && data.data) return handleNavigate(data.data.identifier);
+      window.location.reload();
+    },
     onError(errorMessage) {
       toast({
         title: 'Erro',
@@ -106,7 +114,7 @@ const CreateCompanyDialog = () => {
   }, [hideAddress]);
   
   return (
-    <Dialog>
+    <Dialog >
       <DialogTrigger asChild>
         <Button variant='outline'>
           <PlusCircle className="w-4 h-4 mr-2"/>

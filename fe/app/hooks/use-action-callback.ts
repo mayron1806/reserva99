@@ -16,7 +16,7 @@ export const useActionCallback = <T = any>(fetcher?: FetcherWithComponents<any>,
     if (navigation.state === 'loading' && ok) {
       opt?.onSuccess?.(data);
     }
-    if (navigation.state === 'loading' && !ok) {
+    if (navigation.state === 'loading' && ok === false) {
       opt?.onError?.(error);
     }
   }, [navigation?.state, actionData]);

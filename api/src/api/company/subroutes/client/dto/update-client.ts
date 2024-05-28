@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsEmail, IsOptional, IsPhoneNumber, Length } from 'class-validator';
+import { IsNotEmpty, IsEmail, IsOptional, IsPhoneNumber, Length, MaxLength } from 'class-validator';
 
 export class UpdateClientRequestDto {
   @IsOptional()
@@ -6,7 +6,7 @@ export class UpdateClientRequestDto {
   name?: string;
 
   @IsOptional()
-  @Length(1, 50, { message: 'O alias deve ter no máximo 50 caracteres.' })
+  @MaxLength(50, { message: 'O alias deve ter no máximo 50 caracteres.' })
   alias?: string;
 
   @IsOptional()

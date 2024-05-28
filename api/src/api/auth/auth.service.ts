@@ -8,7 +8,6 @@ import {
 import { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
 import { JwtService } from '@nestjs/jwt';
-import { Security } from 'src/Utils/Security.utils';
 import { RefreshTokenContent } from './types/refresh-token-content';
 import moment from 'moment';
 import { EmailToken } from './types/email-token';
@@ -21,6 +20,7 @@ import { RefreshTokenRequest } from './dto/refresh-token-dto';
 import { ResetPasswordRequest } from './dto/reset-password-dto';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
+import { Security } from 'src/Utils/Security.utils';
 
 @Injectable()
 export class AuthService {
@@ -36,7 +36,6 @@ export class AuthService {
       userId,
       expiration: moment().add(7, 'days').toDate(),
     };
-
     const refreshToken = this.jwt.sign(
       { data: Security.encrypt(JSON.stringify(refreshTokenContent)) },
       { expiresIn: '7d' },

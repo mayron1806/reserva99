@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const normalizePhoneNumber = (value: string | undefined): string => {
   if (!value) return '';
   // Remove all non-digit characters
@@ -49,8 +51,17 @@ export const normalizeMoney = (value: string | undefined) => {
   const addDot = addDecimal.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
   return `R$ ${addDot}`;
 }
+function isIsoDate(str: string) {
+  if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(str)) return false;
+  const d = new Date(str); 
+  return d instanceof Date && !isNaN(d.getTime()) && d.toISOString()===str; // valid date 
+}
 export const normalizeTime = (value: string | undefined) => {
   if (!value) return '';
+  if (isIsoDate(value)) {
+    const date = moment(value).format('hh:mm');
+    return date;
+  }
   const cleanValue = value.replace(/\D/g, "").slice(0, 4); // Remove todos os não dígitos
   const formattedValue = cleanValue.replace(/(\d{2})(\d{2})/, "$1:$2"); // Adiciona os separadores
   if (formattedValue.length === 5) {

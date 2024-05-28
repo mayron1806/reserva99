@@ -13,6 +13,7 @@ type Props = {
   reserves?: ReserveItem[];
   defaultDate?: Date;
   weekTime?: WeekTime;
+  onDateChange?: (date: Date) => void;
   onSelectReserve?: (id: string) => void;
 }
 const viewTab = {
@@ -20,7 +21,7 @@ const viewTab = {
   'day': 'Dia',
   'agenda': 'Agenda',
 }
-const BigCalendar = ({ reserves, defaultDate = new Date(), weekTime, onSelectReserve }: Props) => {
+const BigCalendar = ({ reserves, defaultDate = new Date(), weekTime, onSelectReserve, onDateChange }: Props) => {
  
   const isDisableRange = (date: Date): boolean => {
     if (!weekTime) return false;
@@ -125,7 +126,7 @@ const BigCalendar = ({ reserves, defaultDate = new Date(), weekTime, onSelectRes
       min={min}
       max={max}
       views={['agenda', 'day', "week"]}
-      onNavigate={console.log}
+      onNavigate={(date) => onDateChange?.(date)}
       messages={{
         next: "Proximo",
         previous: "Anterior",

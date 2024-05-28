@@ -16,11 +16,11 @@ import { Matcher } from "react-day-picker";
 
 type Props = {
   date?: Date | string,
-  setDate: (date?: Date) => void;
+  setDate?: (date?: Date) => void;
   error?: string;
   label?: string;
   disabled?: boolean;
-  disabledCalendarMatches: Matcher | Matcher[] | undefined
+  disabledCalendarMatches?: Matcher | Matcher[] | undefined
 }
 export function DatePicker({ setDate, date, error, label, disabled, disabledCalendarMatches }: Props) {
   return (

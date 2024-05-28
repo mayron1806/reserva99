@@ -19,9 +19,12 @@ export class ClientService {
           { name: { contains: filter } },
           { phone: { contains: filter } },
         ] : undefined,
+      }, 
+      include: {
+        _count: { select: { reserves: true } },
       }
     });
-    return GetClientListResponseDto.mapToResponse(clients);
+    return GetClientListResponseDto.mapToResponse(clients.map(c => ({...c, reserveCount: c._count.reserves })));
   }
   async getClientById(companyId: string, clientId: string) {
     const client = await this.txHost.tx.client.findUnique({ where: { id: clientId }});

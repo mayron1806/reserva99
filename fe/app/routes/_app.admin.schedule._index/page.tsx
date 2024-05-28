@@ -44,6 +44,9 @@ const SchedulePage = () => {
             defaultDate={date} 
             weekTime={data.time}
             onSelectReserve={onSelectReserve}
+            onDateChange={(date) => {
+              navigate(`/admin/schedule?date=${date.toISOString()}`)
+            }}
           />
         </CardContent>
       </Card>
